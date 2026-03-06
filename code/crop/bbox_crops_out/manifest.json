@@ -1,0 +1,222 @@
+[
+  {
+    "sample_index": 1,
+    "query": "In the figure, which letter uniquely receives two arrows, and from which letters do they come?",
+    "answer": "D; from C and E.",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 4,
+    "region_index": 1,
+    "subimg_type": "image",
+    "bbox": [
+      281,
+      2228,
+      1890,
+      2941
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_4.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_001_cs_2311.07631_p4_r1_image.png",
+    "crop_size": [
+      1609,
+      713
+    ]
+  },
+  {
+    "sample_index": 2,
+    "query": "In the identities table, what AI entry corresponds to the DS term 'rational'?",
+    "answer": "machine",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 26,
+    "region_index": 1,
+    "subimg_type": "table",
+    "bbox": [
+      305,
+      1512,
+      1520,
+      2005
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_26.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_002_cs_2311.07631_p26_r1_table.png",
+    "crop_size": [
+      1215,
+      493
+    ]
+  },
+  {
+    "sample_index": 3,
+    "query": "For rows with focus 'human', list each area and its first-listed topic in table order.",
+    "answer": "design—ontologies; value—ethics",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 26,
+    "region_index": 1,
+    "subimg_type": "table",
+    "bbox": [
+      287,
+      2025,
+      2263,
+      2527
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_26.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_003_cs_2311.07631_p26_r1_table.png",
+    "crop_size": [
+      1976,
+      502
+    ]
+  },
+  {
+    "sample_index": 4,
+    "query": "Which AREA numerals show a prime mark, and how many named DOMAINS (excluding 'etc') are listed?",
+    "answer": "II' and III'; four.",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 8,
+    "region_index": 1,
+    "subimg_type": "image",
+    "bbox": [
+      546,
+      2096,
+      1987,
+      2812
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_8.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_004_cs_2311.07631_p8_r1_image.png",
+    "crop_size": [
+      1441,
+      716
+    ]
+  },
+  {
+    "sample_index": 5,
+    "query": "Listing the right-hand terms from top to bottom in DS then AI, what sequence appears?",
+    "answer": "concrete, machine, action, rational",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 26,
+    "region_index": 1,
+    "subimg_type": "table",
+    "bbox": [
+      874,
+      1238,
+      1708,
+      1494
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_26.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_005_cs_2311.07631_p26_r1_table.png",
+    "crop_size": [
+      834,
+      256
+    ]
+  },
+  {
+    "sample_index": 6,
+    "query": "In Table 1, which two cells contain primed Roman numerals, and what keywords appear beneath them?",
+    "answer": "Human-Abstract DESIGN; Machine-Concrete SYSTEMS",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 9,
+    "region_index": 1,
+    "subimg_type": "table",
+    "bbox": [
+      719,
+      1244,
+      1796,
+      1770
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_9.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_006_cs_2311.07631_p9_r1_table.png",
+    "crop_size": [
+      1077,
+      526
+    ]
+  },
+  {
+    "sample_index": 7,
+    "query": "In the described spiral process, between which two poles does it oscillate, and what page number is cited for the processual definition?",
+    "answer": "Diversification and simplification; p. 41.",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 15,
+    "region_index": 1,
+    "subimg_type": "text",
+    "bbox": [
+      290,
+      2025,
+      2245,
+      2985
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_15.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_007_cs_2311.07631_p15_r1_text.png",
+    "crop_size": [
+      1955,
+      960
+    ]
+  },
+  {
+    "sample_index": 8,
+    "query": "In the excerpt, what verb describes how the two principal components relate to the general field of data science?",
+    "answer": "undergird",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 9,
+    "region_index": 1,
+    "subimg_type": "text",
+    "bbox": [
+      293,
+      2812,
+      2187,
+      2991
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_9.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_008_cs_2311.07631_p9_r1_text.png",
+    "crop_size": [
+      1894,
+      179
+    ]
+  },
+  {
+    "sample_index": 9,
+    "query": "In the passage, which area contains people good at working with abstract machinery, and what does the model describe instead of objective reality?",
+    "answer": "The analytics area; areas of academic expertise.",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 11,
+    "region_index": 1,
+    "subimg_type": "text",
+    "bbox": [
+      293,
+      2436,
+      2222,
+      2888
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_11.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_009_cs_2311.07631_p11_r1_text.png",
+    "crop_size": [
+      1929,
+      452
+    ]
+  },
+  {
+    "sample_index": 10,
+    "query": "According to the sentence, what two claims are made about definitions' inclusiveness and relative breadth?",
+    "answer": "None includes them all; some are more comprehensive.",
+    "category": "cs",
+    "doc_name": "2311.07631",
+    "page": 3,
+    "region_index": 1,
+    "subimg_type": "text",
+    "bbox": [
+      287,
+      1826,
+      2196,
+      1937
+    ],
+    "source_image": "/ywh/BBox-DocVQA/benchmark/cs/2311.07631/2311.07631_3.png",
+    "crop_image": "/ywh/BBox-DocVQA/code/bbox_crops_out/sample_010_cs_2311.07631_p3_r1_text.png",
+    "crop_size": [
+      1909,
+      111
+    ]
+  }
+]
