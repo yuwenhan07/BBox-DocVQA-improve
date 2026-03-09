@@ -186,7 +186,7 @@ def export_crops(input_jsonl, benchmark_dir, output_dir, limit):
             doc_name = record["doc_name"]
             pages = record.get("evidence_page", [])
             bbox_pages = record.get("bbox", [])
-            type_pages = record.get("subimg_tpye", [])
+            type_pages = record.get("subimg_type", [])
 
             for page_idx, page in enumerate(pages):
                 image_path = benchmark_dir / category / doc_name / f"{doc_name}_{page}.png"
