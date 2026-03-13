@@ -1,0 +1,24 @@
+[
+  {
+    "sample_index": 1,
+    "query": "What year was the first computer program sketched by Charles Babbage?",
+    "answer": "1837",
+    "category": "cs",
+    "doc_name": "2303.13740",
+    "page": 1,
+    "region_index": 1,
+    "subimg_type": "unknown",
+    "bbox": [
+      574,
+      1490,
+      2084,
+      1876
+    ],
+    "source_image": "/home/work/workspace/ywh/BBox-DocVQA-improve/training/cs/2303.13740/1.png",
+    "crop_image": "/home/work/workspace/ywh/BBox-DocVQA-improve/training/sample_001_cs_2303.13740_p1_r1_unknown.png",
+    "crop_size": [
+      1510,
+      386
+    ]
+  }
+]
