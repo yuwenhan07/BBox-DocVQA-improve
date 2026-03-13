@@ -1,0 +1,89 @@
+{
+  "category_counts": {
+    "cs": 216,
+    "econ": 218,
+    "eess": 196,
+    "math": 188,
+    "physics": 213,
+    "q-bio": 176,
+    "q-fin": 216,
+    "stat": 200
+  },
+  "docs_per_category": {
+    "cs": 10,
+    "econ": 10,
+    "eess": 10,
+    "math": 10,
+    "physics": 10,
+    "q-bio": 10,
+    "q-fin": 10,
+    "stat": 10
+  },
+  "subimg_counts": {
+    "image": 721,
+    "table": 280,
+    "text": 952
+  },
+  "modality_combinations": {
+    "text": 712,
+    "image": 443,
+    "image + text": 188,
+    "table": 138,
+    "image + table": 90,
+    "table + text": 52
+  },
+  "category_modality": {
+    "cs": {
+      "image": 109,
+      "table": 51,
+      "text": 112
+    },
+    "econ": {
+      "image": 167,
+      "table": 25,
+      "text": 74
+    },
+    "eess": {
+      "image": 105,
+      "table": 68,
+      "text": 77
+    },
+    "math": {
+      "text": 188
+    },
+    "physics": {
+      "image": 110,
+      "table": 11,
+      "text": 137
+    },
+    "q-bio": {
+      "image": 67,
+      "table": 36,
+      "text": 117
+    },
+    "q-fin": {
+      "image": 99,
+      "table": 66,
+      "text": 95
+    },
+    "stat": {
+      "image": 64,
+      "table": 23,
+      "text": 152
+    }
+  },
+  "page_count_hist": {
+    "1": 1305,
+    "2": 318
+  },
+  "bbox_count_hist": {
+    "1": 749,
+    "2": 874
+  },
+  "bbox_area_bins": {
+    "5-15%": 935,
+    "<5%": 212,
+    "15-30%": 890,
+    ">30%": 460
+  }
+}

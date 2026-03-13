@@ -29,10 +29,10 @@ def normalize_page_boxes(page_boxes):
 def normalize_bbox(box, width, height, precision):
     x1, y1, x2, y2 = [float(v) for v in box]
     rel_box = [
-        round(x1 / width, precision),
-        round(y1 / height, precision),
-        round(x2 / width, precision),
-        round(y2 / height, precision),
+        round(x1 / width * 1000, precision),
+        round(y1 / height * 1000, precision),
+        round(x2 / width * 1000, precision),
+        round(y2 / height * 1000, precision),
     ]
     return rel_box
 
@@ -100,7 +100,7 @@ def convert_jsonl(input_path, benchmark_dir, output_path, precision):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Add normalized rel_bbox fields to the bbox-docvqa JSONL."
+        description="Add normalized 0-1000 rel_bbox fields to the bbox-docvqa JSONL."
     )
     parser.add_argument("--input", default="benchmark/bbox-docvqa.jsonl")
     parser.add_argument("--benchmark-dir", default="benchmark")
@@ -113,7 +113,7 @@ def main():
         "--precision",
         type=int,
         default=6,
-        help="Decimal places for normalized coordinates.",
+        help="Decimal places for 0-1000 normalized coordinates.",
     )
     args = parser.parse_args()
 

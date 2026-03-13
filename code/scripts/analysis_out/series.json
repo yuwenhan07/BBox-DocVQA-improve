@@ -1,0 +1,109 @@
+{
+  "query_length_bins": {
+    "labels": [
+      "<=10",
+      "11-15",
+      "16-20",
+      "21-25",
+      "26-30",
+      "31-40",
+      ">40"
+    ],
+    "counts": [
+      37,
+      249,
+      444,
+      497,
+      282,
+      109,
+      5
+    ]
+  },
+  "answer_length_bins": {
+    "labels": [
+      "<=1",
+      "2-2",
+      "3-4",
+      "5-6",
+      "7-10",
+      ">10"
+    ],
+    "counts": [
+      299,
+      251,
+      534,
+      309,
+      229,
+      1
+    ]
+  },
+  "samples_per_doc_top10": [
+    {
+      "category": "cs",
+      "doc_name": "2311.07631",
+      "samples": 22
+    },
+    {
+      "category": "econ",
+      "doc_name": "2405.09360",
+      "samples": 22
+    },
+    {
+      "category": "econ",
+      "doc_name": "2406.05299",
+      "samples": 22
+    },
+    {
+      "category": "econ",
+      "doc_name": "2406.11528",
+      "samples": 22
+    },
+    {
+      "category": "cs",
+      "doc_name": "2408.14349",
+      "samples": 22
+    },
+    {
+      "category": "econ",
+      "doc_name": "2409.08773",
+      "samples": 22
+    },
+    {
+      "category": "econ",
+      "doc_name": "2410.14317",
+      "samples": 22
+    },
+    {
+      "category": "econ",
+      "doc_name": "2411.15797",
+      "samples": 22
+    },
+    {
+      "category": "econ",
+      "doc_name": "2411.19857",
+      "samples": 22
+    },
+    {
+      "category": "cs",
+      "doc_name": "2412.09651",
+      "samples": 22
+    }
+  ],
+  "bbox_center_grid": [
+    [
+      82,
+      590,
+      97
+    ],
+    [
+      115,
+      859,
+      125
+    ],
+    [
+      48,
+      528,
+      53
+    ]
+  ]
+}

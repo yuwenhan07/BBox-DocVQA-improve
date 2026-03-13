@@ -190,6 +190,7 @@ def export_crops(input_jsonl, benchmark_dir, output_dir, limit):
 
             for page_idx, page in enumerate(pages):
                 image_path = benchmark_dir / category / doc_name / f"{doc_name}_{page}.png"
+                image_path = benchmark_dir / category / doc_name / f"{page}.png"
                 if not image_path.exists():
                     continue
 
