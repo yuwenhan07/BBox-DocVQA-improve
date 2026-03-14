@@ -20,6 +20,23 @@ PALETTE = {
     "light": "#e5e7eb",
     "bg": "#fffdf7",
 }
+QUERY_LENGTH_EDGES = [10, 15, 20, 25, 30, 40]
+ANSWER_LENGTH_EDGES = [1, 2, 4, 6, 10]
+A4_WIDTH = 210
+A4_HEIGHT = 297
+BBOX_CENTER_HEATMAP_COLS = 42
+BBOX_CENTER_HEATMAP_ROWS = 59
+BBOX_CENTER_HEATMAP_SIGMA = 1.35
+BBOX_CENTER_HEATMAP_PALETTE = [
+    "#fff7ec",
+    "#fee8c8",
+    "#fdd49e",
+    "#fdbb84",
+    "#fc8d59",
+    "#ef6548",
+    "#d7301f",
+    "#990000",
+]
 
 
 def png_size(path):
@@ -95,6 +112,81 @@ def svg_line(x1, y1, x2, y2, stroke=None, stroke_width=1, dash=None):
 
 def svg_circle(cx, cy, r, fill, opacity=1.0):
     return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}" opacity="{opacity}"/>'
+
+
+def clamp(value, lower, upper):
+    return max(lower, min(value, upper))
+
+
+def hex_to_rgb(value):
+    value = value.lstrip("#")
+    return tuple(int(value[idx : idx + 2], 16) for idx in range(0, 6, 2))
+
+
+def interpolate_color(color_a, color_b, ratio):
+    ratio = clamp(ratio, 0.0, 1.0)
+    rgb_a = hex_to_rgb(color_a)
+    rgb_b = hex_to_rgb(color_b)
+    channels = [
+        round(channel_a + (channel_b - channel_a) * ratio)
+        for channel_a, channel_b in zip(rgb_a, rgb_b)
+    ]
+    return "#{:02x}{:02x}{:02x}".format(*channels)
+
+
+def sample_palette(palette, ratio):
+    if not palette:
+        return PALETTE["light"]
+    if len(palette) == 1:
+        return palette[0]
+    ratio = clamp(ratio, 0.0, 1.0)
+    scaled = ratio * (len(palette) - 1)
+    lower = int(math.floor(scaled))
+    upper = min(lower + 1, len(palette) - 1)
+    if lower == upper:
+        return palette[lower]
+    return interpolate_color(palette[lower], palette[upper], scaled - lower)
+
+
+def gaussian_kernel_1d(sigma):
+    radius = max(1, int(math.ceil(sigma * 3)))
+    weights = []
+    for offset in range(-radius, radius + 1):
+        weights.append(math.exp(-(offset ** 2) / (2 * sigma ** 2)))
+    total = sum(weights) or 1.0
+    return [value / total for value in weights]
+
+
+def smooth_matrix(matrix, sigma):
+    if not matrix or not matrix[0]:
+        return matrix
+    kernel = gaussian_kernel_1d(sigma)
+    radius = len(kernel) // 2
+    height = len(matrix)
+    width = len(matrix[0])
+
+    horizontal = []
+    for row in matrix:
+        smoothed_row = []
+        for x in range(width):
+            total = 0.0
+            for offset, weight in enumerate(kernel):
+                src_x = clamp(x + offset - radius, 0, width - 1)
+                total += row[src_x] * weight
+            smoothed_row.append(total)
+        horizontal.append(smoothed_row)
+
+    smoothed = []
+    for y in range(height):
+        smoothed_row = []
+        for x in range(width):
+            total = 0.0
+            for offset, weight in enumerate(kernel):
+                src_y = clamp(y + offset - radius, 0, height - 1)
+                total += horizontal[src_y][x] * weight
+            smoothed_row.append(total)
+        smoothed.append(smoothed_row)
+    return smoothed
 
 
 def wrap_svg(width, height, body, title):
@@ -279,32 +371,131 @@ def draw_heatmap(path, title, row_labels, col_labels, matrix, palette):
     save_svg(path, width, height, "".join(body), title)
 
 
-def draw_center_heatmap(path, title, grid_counts):
-    width = 620
-    height = 620
-    left = 110
-    top = 90
-    cell = 120
-    body = [svg_text(left, 40, title, size=24, weight="bold")]
-    max_value = max(max(row) for row in grid_counts)
-    palette = ["#fff5eb", "#fee6ce", "#fdae6b", "#f16913", "#a63603"]
+def draw_matrix_table(path, title, row_header, col_header, row_labels, col_labels, matrix, palette):
+    width = 1320
+    height = 760
+    left = 220
+    top = 130
+    cell_w = 170
+    cell_h = 78
+    header_h = 70
+    body = [svg_text(24, 60, title, size=28, weight="bold")]
+    max_value = max((max(row) for row in matrix), default=0)
 
-    for row in range(3):
-        for col in range(3):
-            value = grid_counts[row][col]
-            ratio = 0 if max_value == 0 else value / max_value
-            color_idx = min(int(ratio * (len(palette) - 1)), len(palette) - 1)
-            x = left + col * cell
-            y = top + row * cell
-            body.append(svg_rect(x, y, cell - 4, cell - 4, palette[color_idx], rx=8))
-            text_color = "#ffffff" if ratio > 0.55 else PALETTE["ink"]
-            body.append(svg_text(x + cell / 2, y + cell / 2 + 5, value, size=18, anchor="middle", fill=text_color, weight="bold"))
+    body.append(svg_text(24, top - 18, f"{row_header} \\ {col_header}", size=24, weight="bold"))
 
-    labels = ["top", "middle", "bottom"]
-    for idx, label in enumerate(labels):
-        body.append(svg_text(left - 18, top + idx * cell + cell / 2 + 5, label, size=13, anchor="end"))
-    for idx, label in enumerate(["left", "center", "right"]):
-        body.append(svg_text(left + idx * cell + cell / 2, top + 3 * cell + 24, label, size=13, anchor="middle"))
+    for col_idx, label in enumerate(col_labels):
+        x = left + col_idx * cell_w
+        body.append(svg_text(x + cell_w / 2, top - 18, label, size=22, anchor="middle", weight="bold"))
+
+    for row_idx, row_label in enumerate(row_labels):
+        y = top + row_idx * cell_h
+        body.append(svg_text(24, y + cell_h / 2 + 8, row_label, size=22, weight="normal"))
+        body.append(svg_line(24, y, left + len(col_labels) * cell_w, y, stroke="#d6d3d1"))
+        for col_idx, value in enumerate(matrix[row_idx]):
+            ratio = 0.0 if max_value == 0 else value / max_value
+            fill = sample_palette(palette, ratio ** 0.82)
+            x = left + col_idx * cell_w
+            body.append(svg_rect(x, y + 10, cell_w - 8, cell_h - 18, fill, stroke="none", rx=10))
+            text_fill = "#ffffff" if ratio > 0.55 else PALETTE["ink"]
+            body.append(
+                svg_text(
+                    x + cell_w / 2,
+                    y + cell_h / 2 + 8,
+                    value,
+                    size=22,
+                    anchor="middle",
+                    fill=text_fill,
+                    weight="bold",
+                )
+            )
+
+    bottom_y = top + len(row_labels) * cell_h
+    body.append(svg_line(24, bottom_y, left + len(col_labels) * cell_w, bottom_y, stroke="#d6d3d1"))
+    body.append(svg_line(left - 16, top - header_h + 14, left - 16, bottom_y, stroke="#d6d3d1"))
+
+    save_svg(path, width, height, "".join(body), title)
+
+
+def draw_center_heatmap(path, title, heatmap_data):
+    width = 840
+    height = 1188
+    left = 96
+    top = 148
+    right = 76
+    colorbar_gap = 24
+    colorbar_width = 24
+    plot_width = width - left - right - colorbar_gap - colorbar_width
+    plot_height = plot_width * A4_HEIGHT / A4_WIDTH
+    plot_right = left + plot_width
+    max_value = heatmap_data["max_smoothed_count"]
+    rows = heatmap_data["rows"]
+    cols = heatmap_data["cols"]
+    cell_w = plot_width / cols
+    cell_h = plot_height / rows
+
+    body = [
+        svg_text(left, 54, title, size=28, weight="bold"),
+        svg_text(
+            left,
+            84,
+            f"Fine-grained center density over {heatmap_data['total_bbox_instances']} bbox instances",
+            size=14,
+            fill=PALETTE["gray"],
+        ),
+    ]
+
+    body.append(svg_rect(left, top, plot_width, plot_height, "#fffaf0", stroke=PALETTE["light"], rx=0))
+    for row_idx, row in enumerate(heatmap_data["smoothed_counts"]):
+        for col_idx, value in enumerate(row):
+            ratio = 0.0 if max_value == 0 else value / max_value
+            fill = sample_palette(BBOX_CENTER_HEATMAP_PALETTE, ratio ** 0.72)
+            x = left + col_idx * cell_w
+            y = top + row_idx * cell_h
+            body.append(svg_rect(x, y, cell_w + 0.25, cell_h + 0.25, fill))
+
+    for frac, label in [(0.0, "0%"), (0.25, "25%"), (0.5, "50%"), (0.75, "75%"), (1.0, "100%")]:
+        x = left + plot_width * frac
+        y = top + plot_height * frac
+        body.append(svg_line(x, top, x, top + plot_height, stroke="#ffffff", stroke_width=0.7, dash="4 6"))
+        body.append(svg_line(left, y, left + plot_width, y, stroke="#ffffff", stroke_width=0.7, dash="4 6"))
+        body.append(svg_text(x, top + plot_height + 28, label, size=12, anchor="middle", fill=PALETTE["gray"]))
+        body.append(svg_text(left - 16, y + 4, label, size=12, anchor="end", fill=PALETTE["gray"]))
+
+    body.append(svg_rect(left, top, plot_width, plot_height, "none", stroke=PALETTE["ink"], rx=0))
+    body.append(svg_text(left + plot_width / 2, top + plot_height + 72, "Page width", size=14, anchor="middle", fill=PALETTE["gray"]))
+    body.append(
+        f'<text x="{42}" y="{top + plot_height / 2}" font-size="14" fill="{PALETTE["gray"]}" '
+        f'font-family="Helvetica,Arial,sans-serif" text-anchor="middle" transform="rotate(-90 42 {top + plot_height / 2})">Page height</text>'
+    )
+    body.append(svg_text(left + plot_width / 2, top - 14, "Top", size=13, anchor="middle", fill=PALETTE["gray"]))
+    body.append(svg_text(left + plot_width / 2, top + plot_height + 46, "Bottom", size=13, anchor="middle", fill=PALETTE["gray"]))
+    body.append(svg_text(left - 38, top + plot_height / 2, "Center Y", size=13, anchor="middle", fill=PALETTE["gray"]))
+    body.append(svg_text(plot_right + right / 2 - 8, top + plot_height / 2, "A4 portrait ratio", size=13, anchor="middle", fill=PALETTE["gray"]))
+
+    colorbar_x = plot_right + colorbar_gap
+    segment_height = plot_height / 240
+    for idx in range(240):
+        ratio = idx / 239
+        y = top + plot_height - (idx + 1) * segment_height
+        fill = sample_palette(BBOX_CENTER_HEATMAP_PALETTE, ratio)
+        body.append(svg_rect(colorbar_x, y, colorbar_width, segment_height + 0.5, fill))
+    body.append(svg_rect(colorbar_x, top, colorbar_width, plot_height, "none", stroke=PALETTE["ink"], rx=0))
+    body.append(svg_text(colorbar_x + colorbar_width / 2, top - 14, "Density", size=13, anchor="middle", fill=PALETTE["gray"]))
+
+    for frac, label in [(0.0, "low"), (0.5, "mid"), (1.0, "high")]:
+        y = top + plot_height - plot_height * frac
+        value = max_value * frac
+        body.append(svg_line(colorbar_x + colorbar_width, y, colorbar_x + colorbar_width + 8, y, stroke=PALETTE["gray"]))
+        body.append(
+            svg_text(
+                colorbar_x + colorbar_width + 14,
+                y + 4,
+                f"{label} ({value:.1f})",
+                size=12,
+                fill=PALETTE["gray"],
+            )
+        )
 
     save_svg(path, width, height, "".join(body), title)
 
@@ -322,6 +513,10 @@ def analyze_dataset(input_path, benchmark_dir):
     samples_per_doc = Counter()
     bbox_area_ratios = []
     bbox_center_grid = [[0 for _ in range(3)] for _ in range(3)]
+    bbox_center_heatmap = [
+        [0 for _ in range(BBOX_CENTER_HEATMAP_COLS)]
+        for _ in range(BBOX_CENTER_HEATMAP_ROWS)
+    ]
     total_bbox_instances = 0
 
     with input_path.open("r", encoding="utf-8") as infile:
@@ -369,6 +564,9 @@ def analyze_dataset(input_path, benchmark_dir):
                     grid_x = min(int(center_x * 3), 2)
                     grid_y = min(int(center_y * 3), 2)
                     bbox_center_grid[grid_y][grid_x] += 1
+                    heatmap_x = min(int(center_x * BBOX_CENTER_HEATMAP_COLS), BBOX_CENTER_HEATMAP_COLS - 1)
+                    heatmap_y = min(int(center_y * BBOX_CENTER_HEATMAP_ROWS), BBOX_CENTER_HEATMAP_ROWS - 1)
+                    bbox_center_heatmap[heatmap_y][heatmap_x] += 1
                     total_bbox_instances += 1
 
     area_bins = Counter()
@@ -384,6 +582,7 @@ def analyze_dataset(input_path, benchmark_dir):
 
     docs_count_list = [len(docs) for docs in docs_per_category.values()]
     samples_per_doc_list = list(samples_per_doc.values())
+    smoothed_bbox_center_heatmap = smooth_matrix(bbox_center_heatmap, BBOX_CENTER_HEATMAP_SIGMA)
 
     summary = {
         "num_records": sum(category_counts.values()),
@@ -413,13 +612,35 @@ def analyze_dataset(input_path, benchmark_dir):
     }
 
     series = {
-        "query_length_bins": build_length_bins(query_lengths, [10, 15, 20, 25, 30, 40]),
-        "answer_length_bins": build_length_bins(answer_lengths, [1, 2, 4, 6, 10]),
+        "query_length_bins": build_length_bins(query_lengths, QUERY_LENGTH_EDGES),
+        "answer_length_bins": build_length_bins(answer_lengths, ANSWER_LENGTH_EDGES),
+        "qa_length_matrix": build_joint_length_matrix(
+            query_lengths,
+            answer_lengths,
+            QUERY_LENGTH_EDGES,
+            ANSWER_LENGTH_EDGES,
+        ),
         "samples_per_doc_top10": [
             {"category": cat, "doc_name": doc, "samples": count}
             for (cat, doc), count in samples_per_doc.most_common(10)
         ],
         "bbox_center_grid": bbox_center_grid,
+        "bbox_center_heatmap": {
+            "rows": BBOX_CENTER_HEATMAP_ROWS,
+            "cols": BBOX_CENTER_HEATMAP_COLS,
+            "sigma": BBOX_CENTER_HEATMAP_SIGMA,
+            "raw_counts": bbox_center_heatmap,
+            "smoothed_counts": [
+                [round(value, 4) for value in row]
+                for row in smoothed_bbox_center_heatmap
+            ],
+            "max_raw_count": max((max(row) for row in bbox_center_heatmap), default=0),
+            "max_smoothed_count": round(
+                max((max(row) for row in smoothed_bbox_center_heatmap), default=0.0),
+                4,
+            ),
+            "total_bbox_instances": total_bbox_instances,
+        },
     }
 
     return summary, tables, series
@@ -432,6 +653,8 @@ def build_length_bins(values, edges):
     for edge in edges:
         if previous is None:
             labels.append(f"<={edge}")
+        elif previous + 1 == edge:
+            labels.append(str(edge))
         else:
             labels.append(f"{previous + 1}-{edge}")
         previous = edge
@@ -447,6 +670,26 @@ def build_length_bins(values, edges):
         if not placed:
             counts[-1] += 1
     return {"labels": labels, "counts": counts}
+
+
+def assign_bin(value, edges):
+    for idx, edge in enumerate(edges):
+        if value <= edge:
+            return idx
+    return len(edges)
+
+
+def build_joint_length_matrix(query_lengths, answer_lengths, query_edges, answer_edges):
+    matrix = [[0 for _ in range(len(answer_edges) + 1)] for _ in range(len(query_edges) + 1)]
+    for query_length, answer_length in zip(query_lengths, answer_lengths):
+        query_idx = assign_bin(query_length, query_edges)
+        answer_idx = assign_bin(answer_length, answer_edges)
+        matrix[query_idx][answer_idx] += 1
+    return {
+        "row_labels": build_length_bins([], query_edges)["labels"],
+        "col_labels": build_length_bins([], answer_edges)["labels"],
+        "matrix": matrix,
+    }
 
 
 def write_summary_table(path, summary, tables):
@@ -516,19 +759,18 @@ def generate_figures(output_dir, summary, tables, series):
     draw_center_heatmap(
         output_dir / "bbox_center_heatmap.svg",
         "BBox Center Distribution",
-        series["bbox_center_grid"],
+        series["bbox_center_heatmap"],
     )
 
-    draw_grouped_bar_chart(
+    draw_matrix_table(
         output_dir / "qa_length_distribution.svg",
-        "Query and Answer Length Distribution",
-        series["query_length_bins"]["labels"],
-        ["query", "answer"],
-        [
-            series["query_length_bins"]["counts"],
-            rebin_answer_counts(series["answer_length_bins"], len(series["query_length_bins"]["labels"])),
-        ],
-        [PALETTE["ink"], PALETTE["gold"]],
+        "Query × Answer Length Matrix",
+        "Query",
+        "Answer",
+        series["qa_length_matrix"]["row_labels"],
+        series["qa_length_matrix"]["col_labels"],
+        series["qa_length_matrix"]["matrix"],
+        ["#fff7ed", "#fed7aa", "#fdba74", "#fb923c", "#ea580c", "#9a3412"],
     )
 
     draw_heatmap(
