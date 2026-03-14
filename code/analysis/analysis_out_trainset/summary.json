@@ -1,0 +1,15 @@
+{
+  "num_records": 30780,
+  "num_categories": 8,
+  "num_docs": 3671,
+  "total_bbox_instances": 49892,
+  "records_per_doc_avg": 8.385,
+  "records_per_doc_median": 7,
+  "docs_per_category_avg": 458.875,
+  "multi_page_records": 11600,
+  "multi_bbox_records": 19112,
+  "query_length_avg": 10.804,
+  "answer_length_avg": 2.783,
+  "bbox_area_ratio_avg": 0.142563,
+  "bbox_area_ratio_median": 0.100629
+}
