@@ -573,10 +573,14 @@ def analyze_dataset(input_path, benchmark_dir):
     for value in bbox_area_ratios:
         if value < 0.05:
             area_bins["<5%"] += 1
+        elif value < 0.10:
+            area_bins["5-10%"] += 1
         elif value < 0.15:
-            area_bins["5-15%"] += 1
+            area_bins["10-15%"] += 1
+        elif value < 0.20:
+            area_bins["15-20%"] += 1
         elif value < 0.30:
-            area_bins["15-30%"] += 1
+            area_bins["20-30%"] += 1
         else:
             area_bins[">30%"] += 1
 

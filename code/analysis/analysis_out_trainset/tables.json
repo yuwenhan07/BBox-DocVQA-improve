@@ -1,0 +1,93 @@
+{
+  "category_counts": {
+    "cs": 3920,
+    "econ": 3381,
+    "eess": 3997,
+    "math": 1197,
+    "physics": 3595,
+    "q-bio": 5457,
+    "q-fin": 6283,
+    "stat": 2950
+  },
+  "docs_per_category": {
+    "cs": 410,
+    "econ": 576,
+    "eess": 288,
+    "math": 252,
+    "physics": 337,
+    "q-bio": 670,
+    "q-fin": 785,
+    "stat": 353
+  },
+  "subimg_counts": {
+    "image": 10116,
+    "table": 5887,
+    "text": 22578
+  },
+  "modality_combinations": {
+    "text": 16039,
+    "image": 4758,
+    "image + text": 4096,
+    "table + text": 2443,
+    "table": 2182,
+    "image + table": 1262
+  },
+  "category_modality": {
+    "cs": {
+      "image": 1030,
+      "table": 835,
+      "text": 3096
+    },
+    "econ": {
+      "image": 1219,
+      "table": 860,
+      "text": 2210
+    },
+    "eess": {
+      "image": 1011,
+      "table": 895,
+      "text": 3093
+    },
+    "math": {
+      "image": 267,
+      "table": 133,
+      "text": 1003
+    },
+    "physics": {
+      "image": 1452,
+      "table": 262,
+      "text": 2615
+    },
+    "q-bio": {
+      "image": 2100,
+      "table": 962,
+      "text": 4020
+    },
+    "q-fin": {
+      "image": 1897,
+      "table": 1388,
+      "text": 4571
+    },
+    "stat": {
+      "image": 1140,
+      "table": 552,
+      "text": 1970
+    }
+  },
+  "page_count_hist": {
+    "1": 19180,
+    "2": 11600
+  },
+  "bbox_count_hist": {
+    "1": 11668,
+    "2": 19112
+  },
+  "bbox_area_bins": {
+    "5-10%": 24629,
+    "20-30%": 4251,
+    "10-15%": 11233,
+    "15-20%": 5207,
+    ">30%": 4437,
+    "<5%": 135
+  }
+}
