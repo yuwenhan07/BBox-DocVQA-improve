@@ -12,13 +12,14 @@ from xml.sax.saxutils import escape
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PALETTE = {
     "ink": "#14213d",
-    "blue": "#3a86ff",
-    "red": "#d62828",
-    "gold": "#f4a261",
-    "green": "#2a9d8f",
-    "gray": "#6b7280",
-    "light": "#e5e7eb",
-    "bg": "#fffdf7",
+    "blue": "#2563eb",
+    "red": "#1d4ed8",
+    "gold": "#93c5fd",
+    "green": "#38bdf8",
+    "gray": "#4f6280",
+    "light": "#d7e7fb",
+    "bg": "#ffffff",
+    "panel": "#f4f8ff",
 }
 QUERY_LENGTH_EDGES = [10, 15, 20, 25, 30, 40]
 ANSWER_LENGTH_EDGES = [1, 2, 4, 6, 10]
@@ -28,14 +29,14 @@ BBOX_CENTER_HEATMAP_COLS = 42
 BBOX_CENTER_HEATMAP_ROWS = 59
 BBOX_CENTER_HEATMAP_SIGMA = 1.35
 BBOX_CENTER_HEATMAP_PALETTE = [
-    "#fff7ec",
-    "#fee8c8",
-    "#fdd49e",
-    "#fdbb84",
-    "#fc8d59",
-    "#ef6548",
-    "#d7301f",
-    "#990000",
+    "#f5f9ff",
+    "#dbeafe",
+    "#bfdbfe",
+    "#93c5fd",
+    "#60a5fa",
+    "#3b82f6",
+    "#2563eb",
+    "#1d4ed8",
 ]
 DEFAULT_REFERENCE_PNG = Path(
     "/Users/wenhanyu/Documents/🐟/科研/Proj.BBox-DocVQA/MM-dataset/"
@@ -449,7 +450,7 @@ def draw_center_heatmap(path, title, heatmap_data):
         ),
     ]
 
-    body.append(svg_rect(left, top, plot_width, plot_height, "#fffaf0", stroke=PALETTE["light"], rx=0))
+    body.append(svg_rect(left, top, plot_width, plot_height, PALETTE["panel"], stroke=PALETTE["light"], rx=0))
     for row_idx, row in enumerate(heatmap_data["smoothed_counts"]):
         for col_idx, value in enumerate(row):
             ratio = 0.0 if max_value == 0 else value / max_value
@@ -776,7 +777,7 @@ def generate_figures(output_dir, summary, tables, series):
         series["qa_length_matrix"]["row_labels"],
         series["qa_length_matrix"]["col_labels"],
         series["qa_length_matrix"]["matrix"],
-        ["#fff7ed", "#fed7aa", "#fdba74", "#fb923c", "#ea580c", "#9a3412"],
+        ["#eff6ff", "#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#2563eb"],
     )
 
     draw_heatmap(
@@ -789,7 +790,7 @@ def generate_figures(output_dir, summary, tables, series):
             [tables["category_modality"][cat].get("image", 0) for cat in tables["category_modality"]],
             [tables["category_modality"][cat].get("table", 0) for cat in tables["category_modality"]],
         ],
-        ["#fef3c7", "#fcd34d", "#f59e0b", "#d97706", "#92400e"],
+        ["#eff6ff", "#bfdbfe", "#93c5fd", "#60a5fa", "#2563eb"],
     )
 
 

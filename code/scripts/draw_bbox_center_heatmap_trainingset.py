@@ -10,22 +10,23 @@ from xml.sax.saxutils import escape
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PALETTE = {
     "ink": "#14213d",
-    "gray": "#6b7280",
-    "light": "#e5e7eb",
-    "bg": "#fffdf7",
+    "gray": "#44656a",
+    "light": "#cde8e4",
+    "bg": "#ffffff",
+    "panel": "#f2fbf9",
 }
 FONT_FAMILY = "'Comic Sans MS', 'Comic Sans', cursive"
 A4_WIDTH = 210
 A4_HEIGHT = 297
 DEFAULT_PALETTE = [
-    "#fff7ec",
-    "#fee8c8",
-    "#fdd49e",
-    "#fdbb84",
-    "#fc8d59",
-    "#ef6548",
-    "#d7301f",
-    "#990000",
+    "#f0fdfa",
+    "#ccfbf1",
+    "#99f6e4",
+    "#5eead4",
+    "#2dd4bf",
+    "#14b8a6",
+    "#0f766e",
+    "#115e59",
 ]
 DEFAULT_REFERENCE_PNG = Path(
     "/Users/wenhanyu/Documents/🐟/科研/Proj.BBox-DocVQA/MM-dataset/"
@@ -245,7 +246,7 @@ def draw_center_heatmap(path, title, heatmap_data, palette):
         ),
     ]
 
-    body.append(svg_rect(left, top, plot_width, plot_height, "#fffaf0", stroke=PALETTE["light"]))
+    body.append(svg_rect(left, top, plot_width, plot_height, PALETTE["panel"], stroke=PALETTE["light"]))
     for row_idx, row in enumerate(heatmap_data["smoothed_counts"]):
         for col_idx, value in enumerate(row):
             ratio = 0.0 if max_value == 0 else value / max_value
